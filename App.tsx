@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { evaluateDecision } from './services/geminiService';
 import { Judgment, HistoryItem } from './types';
 import { JudgmentCard } from './components/JudgmentCard';
@@ -11,7 +11,6 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Funny loading messages
   const loadingMessages = [
     "Консультируюсь с богами плохих решений...",
     "Опрашиваю твой здравый смысл (он занят)...",
@@ -56,7 +55,7 @@ const App: React.FC = () => {
       setHistory(prev => [newItem, ...prev].slice(0, 10));
       setDecision('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка');
+      setError(err instanceof Error ? err.message : 'Произошла непредвиденная ошибка');
     } finally {
       setLoading(false);
     }
@@ -67,7 +66,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col items-center py-8 px-4 sm:px-6">
+    <div className="min-h-screen text-slate-100 flex flex-col items-center py-8 px-4 sm:px-6 bg-[#0f172a]">
       <header className="max-w-2xl w-full text-center mb-12">
         <div className="inline-block p-3 rounded-full bg-indigo-600/20 mb-4 border border-indigo-500/30">
           <i className="fa-solid fa-gavel text-3xl text-indigo-400"></i>
@@ -81,7 +80,6 @@ const App: React.FC = () => {
       </header>
 
       <main className="max-w-2xl w-full space-y-8">
-        {/* Input Form */}
         <section className="glass rounded-3xl p-6 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
@@ -89,7 +87,7 @@ const App: React.FC = () => {
                 value={decision}
                 onChange={(e) => setDecision(e.target.value)}
                 placeholder="Я решил(а)... (например, уволиться и стать фермером в Minecraft)"
-                className="w-full h-32 bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-500"
+                className="w-full h-32 bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-500 text-white"
                 disabled={loading}
               />
             </div>
@@ -138,7 +136,6 @@ const App: React.FC = () => {
           )}
         </section>
 
-        {/* Loading State */}
         {loading && (
           <div className="text-center py-12 animate-pulse">
             <p className="text-indigo-400 text-xl font-medium italic">
@@ -147,15 +144,16 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Error State */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-xl text-red-400 flex items-center gap-3">
-            <i className="fa-solid fa-triangle-exclamation"></i>
-            <span>{error}</span>
+          <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-xl text-red-400 flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+            <i className="fa-solid fa-triangle-exclamation mt-1"></i>
+            <div className="flex-1">
+              <p className="font-bold">Ошибка</p>
+              <p className="text-sm opacity-90">{error}</p>
+            </div>
           </div>
         )}
 
-        {/* Current Result */}
         {currentJudgment && (
           <JudgmentCard 
             category={currentJudgment.category} 
@@ -163,9 +161,8 @@ const App: React.FC = () => {
           />
         )}
 
-        {/* History */}
         {history.length > 0 && (
-          <section className="space-y-4">
+          <section className="space-y-4 pt-4">
             <div className="flex items-center justify-between px-2">
               <h2 className="text-lg font-bold text-slate-400 uppercase tracking-widest">Прошлые ошибки</h2>
               <button 
