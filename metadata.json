@@ -1,0 +1,5 @@
+{
+  "name": "Judge My Life",
+  "description": "An ironical yet sensible evaluator of life decisions that provides witty feedback on your choices using the Gemini API.",
+  "requestFramePermissions": []
+}
