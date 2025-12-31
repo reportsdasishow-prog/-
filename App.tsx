@@ -55,7 +55,7 @@ const App: React.FC = () => {
       setHistory(prev => [newItem, ...prev].slice(0, 10));
       setDecision('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла непредвиденная ошибка');
+      setError(err instanceof Error ? err.message : 'Произошла ошибка при связи с Судьей');
     } finally {
       setLoading(false);
     }

@@ -16,9 +16,9 @@ const SYSTEM_PROMPT = `
 `;
 
 export async function evaluateDecision(decision: string): Promise<Judgment> {
-  // Создаем экземпляр прямо перед вызовом, как того требуют правила
-  const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) ? process.env.API_KEY : '';
-  const ai = new GoogleGenAI({ apiKey });
+  // Важно: создаем инстанс прямо перед использованием
+  // process.env.API_KEY внедряется автоматически средой выполнения
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
   
   try {
     const response = await ai.models.generateContent({
@@ -45,12 +45,11 @@ export async function evaluateDecision(decision: string): Promise<Judgment> {
     });
 
     const text = response.text;
-    if (!text) throw new Error("Пустой ответ от модели");
+    if (!text) throw new Error("Модель не вернула текст приговора.");
     
-    const result = JSON.parse(text);
-    return result as Judgment;
+    return JSON.parse(text) as Judgment;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Не удалось получить совет от вселенной. Возможно, звезды (или API ключ) не сошлись.");
+    throw new Error("Не удалось получить совет от вселенной. Возможно, стоит попробовать еще раз.");
   }
 }
